@@ -5,7 +5,7 @@ const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopup = document.querySelector("#add-todo-popup");
 const addTodoForm = addTodoPopup.querySelector(".popup__form");
 const addTodoCloseBtn = addTodoPopup.querySelector(".popup__close");
-const todoTemplate = document.querySelector("#todo-template");
+// const todoTemplate = document.querySelector("#todo-template"); => removed as it's now in Todo.js
 const todosList = document.querySelector(".todos__list");
 
 const openModal = (modal) => {
@@ -20,6 +20,9 @@ const closeModal = (modal) => {
 const generateTodo = (data) => {
   const todo = new Todo(data, "#todo-Template");
   const todoElement = todo.getView();
+  return todoElement;
+
+  // To Be Removed:
 //   const todoElement = todoTemplate.content
 //     .querySelector(".todo")
 //     .cloneNode(true);
@@ -52,7 +55,7 @@ const generateTodo = (data) => {
 //     todoElement.remove();
 //   });
 
-  return todoElement;
+  
 };
 
 addTodoButton.addEventListener("click", () => {
