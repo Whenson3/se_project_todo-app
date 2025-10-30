@@ -1,23 +1,31 @@
 class FormValidator {
     constructor(settings, formEl) {
+        if (!settings || !formEl) {
+            throw new Error('Both settings and form element are required');
+        }
         this._inputSelector = settings.inputSelector;
         this._submitButtonSelector = settings.submitButtonSelector;
         this._errorClass = settings.errorClass;
         this._inputErrorClass = settings.inputErrorClass;
         this._inactiveButtonClass = settings.inactiveButtonClass;
         this._formEl = formEl;
-
+        this._buttonElement = null;
     }
 
   _setEventListeners() {
       this._inputList = Array.from(
         this._formEl.querySelectorAll(this._inputSelector)
       );
-      const buttonElement = this._formEl.querySelector(
+      this._buttonElement = this._formEl.querySelector(
         this._submitButtonSelector
       );
 
-      this._toggleButtonState(this._inputList, buttonElement);
+      if (!this._buttonElement) {
+          console.warn(`Submit button with selector "${this._submitButtonSelector}" not found`);
+          return;
+      }
+
+      this._toggleButtonState(this._inputList, this._buttonElement);
 
       this._inputList.forEach((inputElement) => {
         inputElement.addEventListener("input", () => {
@@ -65,11 +73,26 @@ class FormValidator {
 
     enableValidation() {
         this._formEl.addEventListener("submit", (evt) => {
-          evt.preventDefault();
-     });
-    this._setEventListeners();
- }
-  }
+            evt.preventDefault();
+        });
+        this._setEventListeners();
+    }
 
+    resetValidation() {
+        if (!this._inputList || !this._buttonElement) return;
+
+        this._inputList.forEach((inputElement) => {
+            const errorElement = this._formEl.querySelector(`#${inputElement.id}-error`);
+            this._hideInputError(inputElement, errorElement);
+        });
+
+        this._toggleButtonState(this._inputList, this._buttonElement);
+    }
+
+    clearForm() {
+        this._formEl.reset();
+        this.resetValidation();
+    }
+}
 
 export default FormValidator;
