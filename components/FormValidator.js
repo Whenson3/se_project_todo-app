@@ -10,19 +10,19 @@ class FormValidator {
     }
 
   _setEventListeners() {
-      const inputList = Array.from(
+      this._inputList = Array.from(
         this._formEl.querySelectorAll(this._inputSelector)
       );
       const buttonElement = this._formEl.querySelector(
         this._submitButtonSelector
       );
 
-      this._toggleButtonState(inputList, buttonElement);
+      this._toggleButtonState(this._inputList, buttonElement);
 
-      inputList.forEach((inputElement) => {
+      this._inputList.forEach((inputElement) => {
         inputElement.addEventListener("input", () => {
           this._checkInputValidity(inputElement);
-          this._toggleButtonState(inputList, buttonElement);
+          this._toggleButtonState(this._inputList, buttonElement);
         });
       });
   }
