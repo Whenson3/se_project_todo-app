@@ -21,7 +21,7 @@ const closeModal = (modal) => {
 
 // The logic in this function should all be handled in the Todo class.
 const generateTodo = (data) => {
-  const todo = new Todo(data, "#todo-Template");
+  const todo = new Todo(data, "#todo-template");
   const todoElement = todo.getView();
   return todoElement;
 
@@ -81,9 +81,11 @@ addTodoForm.addEventListener("submit", (evt) => {
   const id = uuidv4();
   const values = { name, date, id };
   const todo = generateTodo(values);
-  todosList.append(todo);
+  todosList.prepend(todo);
+  evt.target.reset();
   closeModal(addTodoPopup);
 });
+
 
 initialTodos.forEach((item) => {
   const todo = generateTodo(item);
