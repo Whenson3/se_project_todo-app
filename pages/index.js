@@ -4,6 +4,7 @@ import { initialTodos, validationConfig} from "../utils/constant.js";
 
 import Todo from "../components/Todo.js";
 import FormValidator from "../components/FormValidator.js";
+import TodoCounter from '../components/TodoCounter.js';
 import PopupWithForm from '../components/PopupWithForm.js';
 import Section from '../components/Section.js';
 
@@ -11,47 +12,81 @@ const addTodoButton = document.querySelector(".button_action_add");
 const addTodoPopupEl = document.querySelector("#add-todo-popup");
 const addTodoForm = addTodoPopupEl.querySelector(".popup__form");
 const todosList = document.querySelector(".todos__list");
+const todoCounter = new TodoCounter(initialTodos, ".counter__text");
 
 const addTodoPopup = new PopupWithForm( { 
   popupSelector: "#add-todo-popup", 
-  handleFormSubmit: () => {}, 
+  handleFormSubmit: (values) => {
+    const name = evt.target.name.value;
+    const dateInput = evt.target.date.value;
+
+
+    const date = new Date(dateInput);
+    date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
+
+    const id = uuidv4();
+    const values = { name, date, id };
+    const todoElement = generateTodo(values);
+    section.addItem(todoElement);
+    evt.target.reset();
+
+    newTodoValidator.resetValidation();
+
+    addTodoPopup.close();
+  }
 });
+
 
 addTodoPopup.setEventListeners();
 
-
 const generateTodo = (data) => {
-  const todo = new Todo(data, "#todo-template");
-  const todoElement = todo.getView();
-  return todoElement;
+  try {
+    if (!data) {
+      throw new Error('Todo data is required');
+    }
+
+    const todoData = {
+      id: data.id || uuidv4(),
+      name: data.name || '',
+      completed: Boolean(data.completed),
+      date: data.date instanceof Date ? data.date : new Date(data.date) || null
+    };
+
+    if (!todoData.name) {
+      throw new Error('Todo name is required');
+    }
+
+    const todo = new Todo(todoData, "#todo-template");
+    const todoElement = todo.getView();
+    
+    if (!todoElement) {
+      throw new Error('Failed to generate todo element');
+    }
+    
+    return todoElement;
+  } catch (error) {
+    console.error('Error generating todo:', error);
+    console.log('Problematic data:', data);
+    return null;
+  }
 };
+
+const section = new Section({
+  items: initialTodos,
+  renderer: (item) => {
+    const todoElement = generateTodo(item);
+    if (todoElement) {
+      section.addItem(todoElement);
+    }
+  },
+  containerSelector: ".todos__list",
+});
+
+section.renderItems();
 
 addTodoButton.addEventListener("click", () => {
   addTodoPopup.open();
 });
-
-
-
-// addTodoForm.addEventListener("submit", (evt) => {
-//   evt.preventDefault();
-//   const name = evt.target.name.value;
-//   const dateInput = evt.target.date.value;
-
-
-//   const date = new Date(dateInput);
-//   date.setMinutes(date.getMinutes() + date.getTimezoneOffset());
-
-//   const id = uuidv4();
-//   const values = { name, date, id };
-//   const todoElement = generateTodo(values);
-//   section.addItem(todoElement);
-//   evt.target.reset();
-//   closeModal(addTodoPopupEl);
-
-//   addTodoFormValidator.resetValidation();
-
-//   addTodoPopup.close();
-// });
 
 const newTodoValidator = new FormValidator(validationConfig, addTodoForm);
 newTodoValidator.enableValidation();
