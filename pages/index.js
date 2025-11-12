@@ -36,6 +36,10 @@ const addTodoPopup = new PopupWithForm( {
   }
 });
 
+function handleCheck(completed) {
+  todoCounter.updateCompleted(completed ? 1 : -1);
+}
+
 
 addTodoPopup.setEventListeners();
 
@@ -56,7 +60,7 @@ const generateTodo = (data) => {
       throw new Error('Todo name is required');
     }
 
-    const todo = new Todo(todoData, "#todo-template");
+    const todo = new Todo(todoData, "#todo-template", handleCheck);
     const todoElement = todo.getView();
     
     if (!todoElement) {
