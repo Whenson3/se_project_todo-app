@@ -1,8 +1,9 @@
 class Todo {
-  constructor(data, template, handleCheck) {
+  constructor(data, template, handleCheck, onDelete) {
     this._data = data;
     this._templateElement = document.querySelector(template);
     this._handleCheck = handleCheck;
+    this._onDelete = onDelete;
   }
 
   _setEventListeners() {
@@ -15,6 +16,9 @@ class Todo {
     });
     this._todoDeleteBtn.addEventListener("click", () => {
       this._todoElement.remove();
+      if (typeof this._onDelete === 'function') {
+        this._onDelete(this._data.id);
+      }
     });
   }
 
