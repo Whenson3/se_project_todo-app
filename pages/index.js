@@ -13,7 +13,6 @@ const addTodoPopupEl = document.querySelector("#add-todo-popup");
 const addTodoForm = addTodoPopupEl.querySelector(".popup__form");
 const todosList = document.querySelector(".todos__list");
 const todoCounter = new TodoCounter(initialTodos, ".counter__text");
-const todo = new Todo(todoData, "#todo-template", handleCheck, handleDelete);
 
 const addTodoPopup = new PopupWithForm( { 
   popupSelector: "#add-todo-popup", 
@@ -47,6 +46,10 @@ function handleCheck(completed) {
   }
 };
   todoCounter.updateCompleted(completed ? 1 : -1);
+}
+
+function handleDelete(todoId) {
+  todoCounter.updateTotal(false);
 }
 
 
