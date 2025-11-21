@@ -29,6 +29,7 @@ const addTodoPopup = new PopupWithForm( {
     const todoElement = generateTodo(todoData);
     section.addItem(todoElement);
     addTodoForm.reset();
+    todoCounter.updateTotal(true);
 
     newTodoValidator.resetValidation();
 
@@ -39,6 +40,10 @@ const addTodoPopup = new PopupWithForm( {
 
 
 function handleCheck(completed) {
+  todoCounter.updateCompleted(completed);
+}
+
+
   const handleDelete = (completed) => {
   todoCounter.updateTotal(false); 
   if (completed) {
@@ -46,9 +51,8 @@ function handleCheck(completed) {
   }
 };
   todoCounter.updateCompleted(completed ? 1 : -1);
-}
 
-function handleDelete(todoId) {
+  function handleDelete(todoId) {
   todoCounter.updateTotal(false);
 }
 
@@ -72,7 +76,7 @@ const generateTodo = (data) => {
       throw new Error('Todo name is required');
     }
 
-    const todo = new Todo(todoData, "#todo-template", handleCheck);
+    const todo = new Todo(todoData, "#todo-template", handleCheck, () => handleDelete(todoData.completed));
     const todoElement = todo.getView();
     
     if (!todoElement) {
