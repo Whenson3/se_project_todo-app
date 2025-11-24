@@ -50,12 +50,7 @@ function handleCheck(completed) {
     todoCounter.updateCompleted(false);
   }
 };
-  todoCounter.updateCompleted(completed ? 1 : -1);
-
-  function handleDelete(todoId) {
-  todoCounter.updateTotal(false);
-}
-
+  
 
 addTodoPopup.setEventListeners();
 
